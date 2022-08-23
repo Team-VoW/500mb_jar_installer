@@ -1,0 +1,11 @@
+/server/target
+/server/jars
+/server/.idea
+
+/installer/out
+/installer/build
+/installer/.idea
+/installer/test.jar
+/installer/.gradle
+
+*/.DS_Store
