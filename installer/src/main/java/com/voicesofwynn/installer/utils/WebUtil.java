@@ -4,11 +4,9 @@ import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +14,7 @@ import java.util.Map;
 public class WebUtil {
 
     public static String[] sources = new String[] { // don't forget the final /
-            "http://localhost:8000/"
+            "http://localhost:8080/"
     };
 
 

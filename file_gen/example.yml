@@ -1,8 +1,4 @@
 test:
-  path: "./jars/test.jar"
-  name: "The cool test"
-  recommended-name: "test.jar"
-test2:
-  path: "./jars/test2.jar"
-  name: "The cooler test"
-  recommended-name: "test.jar"
+  path: "./jars/VoicesOfWynn-MC1.12.2-v1.01.jar"
+  name: "VoicesOfWynn MC1.12.2 v1.01"
+  recommended-name: "VoicesOfWynn-MC1.12.2-v1.01.jar"
