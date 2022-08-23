@@ -23,6 +23,15 @@ public class Main {
 
         JFrame jFrame = new JFrame("Voices of Wynn installer");
 
+        try {
+            Image img = ImageIO.read(Main.class.getResource("/wynnvplogo.png"));
+            jFrame.setIconImage(img);
+            final Taskbar taskbar = Taskbar.getTaskbar();
+            taskbar.setIconImage(img);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         final Map<String, InstallerUiUsedUtils.remoteJar> options;
         Map<String, InstallerUiUsedUtils.remoteJar> options1;
         try {
@@ -34,11 +43,13 @@ public class Main {
         }
         options = options1;
 
+
         // logo
         JButton logo = new JButton();
         try {
             ImageIcon icon = new ImageIcon(ImageIO.read(Main.class.getResource("/wynnvplogo.png")).getScaledInstance(350, 350, Image.SCALE_FAST));
             logo.setIcon(icon);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
