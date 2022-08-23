@@ -76,7 +76,6 @@ public class Main {
         downloadToRecommendationLabel.setBounds(0, 550, 350, 100);
         downloadToRecommendationLabel.setEditable(false);
         downloadToRecommendationLabel.setLineWrap(true);
-        downloadToRecommendationLabel.setBackground(new Color(0, 0, 0, 0));
 
         path.addActionListener(e -> {
             path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
@@ -179,6 +178,7 @@ public class Main {
                     }
 
                     JOptionPane.showMessageDialog(jFrame, "Done!");
+                    working.set(false);
 
                 } catch (Exception e) {
                     e.printStackTrace();
