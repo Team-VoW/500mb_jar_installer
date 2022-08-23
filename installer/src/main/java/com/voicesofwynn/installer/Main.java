@@ -1,7 +1,7 @@
-package com.voiceofwynn.installer;
+package com.voicesofwynn.installer;
 
-import com.voiceofwynn.installer.utils.FileUtils;
-import com.voiceofwynn.installer.utils.WebUtil;
+import com.voicesofwynn.installer.utils.FileUtils;
+import com.voicesofwynn.installer.utils.WebUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

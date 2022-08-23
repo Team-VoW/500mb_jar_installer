@@ -1,12 +1,10 @@
-package com.voiceofwynn.installer;
+package com.voicesofwynn.installer;
 
-import com.voiceofwynn.installer.utils.FileUtils;
-import com.voiceofwynn.installer.utils.WebUtil;
+import com.voicesofwynn.installer.utils.FileUtils;
+import com.voicesofwynn.installer.utils.WebUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.CRC32;

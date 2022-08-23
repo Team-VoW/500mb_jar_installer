@@ -13,3 +13,12 @@ task generateSources(type: Copy) {
     from 'src/replaceme/java'
     into "$buildDir/generated-src"
 }
+
+jar {
+    manifest {
+        attributes(
+                "Manifest-Version": project.version,
+                "Main-Class": "com.voicesofwynn.installer.Main"
+        )
+    }
+}

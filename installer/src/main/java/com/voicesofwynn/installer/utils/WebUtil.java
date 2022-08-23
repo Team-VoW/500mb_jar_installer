@@ -1,4 +1,4 @@
-package com.voiceofwynn.installer.utils;
+package com.voicesofwynn.installer.utils;
 
 import java.awt.*;
 import java.io.BufferedInputStream;
@@ -78,6 +78,8 @@ public class WebUtil {
                 con.setRequestMethod("GET");
                 if (con.getResponseMessage().equals("OK")) {
                     stream = con.getInputStream();
+                } else {
+                    throw new IOException();
                 }
                 break;
             } catch (IOException e) {

@@ -1,4 +1,4 @@
-package com.voiceofwynn.installer.utils;
+package com.voicesofwynn.installer.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
