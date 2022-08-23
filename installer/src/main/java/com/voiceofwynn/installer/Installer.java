@@ -1,7 +1,7 @@
 package com.voiceofwynn.installer;
 
 import com.voiceofwynn.installer.utils.FileUtils;
-import com.voiceofwynn.installer.utils.SocketCommunication;
+import com.voiceofwynn.installer.utils.WebUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class Installer {
-    public static boolean install(File jarFile, String serverIp, int port, InstallerOut out, String request) throws IOException, NumberFormatException {
+    public static boolean install(File jarFile, InstallerOut out, String request) throws Exception {
         // create a cache dir
         out.outState("Unpacking the current jar!");
         File installCache = new File(jarFile.getParent() + "/installer_cache");
@@ -32,19 +32,7 @@ public class Installer {
         out.outState("Connecting to server to see what changed in " + request + "!");
         // connect to server and get the changes
         {
-            Socket sock = new Socket(serverIp, port);
-            SocketCommunication com = new SocketCommunication(sock);
-
-            com.write(request);
-            com.flush();
-
-            String str = (String) com.acceptValue();
-            Map<String, Long> fileMap = new HashMap<>();
-            while (!str.equals("~end~")) {
-                String[] strs = str.split("~/~");
-                fileMap.put(strs[0], Long.parseLong(strs[1]));
-                str = (String) com.acceptValue();
-            }
+            Map<String, Long> fileMap = WebUtil.getRemoteFilesFromCSV(request);
 
             out.outState("Scanning files!");
 
@@ -112,8 +100,6 @@ public class Installer {
 
                 out.outState("Downloading " + fileNeeded + "!");
                 System.out.println("Asking for " + fileNeeded);
-                com.write(fileNeeded);
-                com.flush();
 
                 File fileToCreate = new File(installCache.getPath() + "/" + fileNeeded);
                 fileToCreate.getParentFile().mkdirs();
@@ -122,7 +108,7 @@ public class Installer {
 
                 FileOutputStream fOut = new FileOutputStream(fileToCreate);
 
-                fOut.write((byte[]) com.acceptValue());
+                fOut.write(WebUtil.getRemoteFile(request, fileNeeded));
 
                 fOut.close();
 

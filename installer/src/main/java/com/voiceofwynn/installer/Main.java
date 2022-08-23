@@ -1,7 +1,7 @@
 package com.voiceofwynn.installer;
 
 import com.voiceofwynn.installer.utils.FileUtils;
-import com.voiceofwynn.installer.utils.InstallerUiUsedUtils;
+import com.voiceofwynn.installer.utils.WebUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,12 +32,13 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        final Map<String, InstallerUiUsedUtils.remoteJar> options;
-        Map<String, InstallerUiUsedUtils.remoteJar> options1;
+        final Map<String, WebUtil.remoteJar> options;
+        Map<String, WebUtil.remoteJar> options1;
         try {
-            options1 = InstallerUiUsedUtils.getRemoteJars(IP, PORT);
-        } catch (IOException e) {
+            options1 = WebUtil.getRemoteJarsFromCSV();
+        } catch (Exception e) {
             options1 = null;
+            e.printStackTrace();
             JOptionPane.showMessageDialog(jFrame, "Unable to connect to server!");
             System.exit(0);
         }
@@ -55,7 +56,7 @@ public class Main {
         }
         logo.addActionListener(e -> {
             try {
-                InstallerUiUsedUtils.openWebpage(new URI("https://voicesofwynn.com"));
+                WebUtil.openWebpage(new URI("https://voicesofwynn.com"));
             } catch (URISyntaxException ex) {
                 throw new RuntimeException(ex);
             }
@@ -68,7 +69,7 @@ public class Main {
         downloadChoose.setBounds(0, 400, 350, 50);
         downloadLabel.setBounds(0, 380, 350, 50);
 
-        for (Map.Entry<String, InstallerUiUsedUtils.remoteJar> jar : options.entrySet()) {
+        for (Map.Entry<String, WebUtil.remoteJar> jar : options.entrySet()) {
             downloadChoose.addItem(jar.getKey());
         }
 
@@ -176,10 +177,11 @@ public class Main {
                             return;
                         }
                     }
+                    WebUtil.remoteJar jar = options.get((String) downloadChoose.getSelectedItem());
 
-                    Installer.install(f, IP, PORT, out, (String) downloadChoose.getSelectedItem());
+                    Installer.install(f, out, jar.id());
                     feedback.setText("Done");
-                    String rec = options.get((String) downloadChoose.getSelectedItem()).recommendedFileName();
+                    String rec = jar.recommendedFileName();
                     if (!f.getName().equals(rec)) {
                         int o = JOptionPane.showConfirmDialog(jFrame, "Would you like to rename " + f.getName() + " to recommended " + rec + "?");
 

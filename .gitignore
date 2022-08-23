@@ -1,6 +1,8 @@
-/server/target
-/server/jars
-/server/.idea
+# Someone please clean this up later
+/file_gen/jars
+/file_gen/target
+/file_gen/out
+/file_gen/.idea
 
 /installer/out
 /installer/build

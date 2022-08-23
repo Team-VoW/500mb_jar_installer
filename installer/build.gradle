@@ -8,3 +8,8 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
+
+task generateSources(type: Copy) {
+    from 'src/replaceme/java'
+    into "$buildDir/generated-src"
+}
