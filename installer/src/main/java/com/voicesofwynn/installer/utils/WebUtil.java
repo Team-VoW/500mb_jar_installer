@@ -17,8 +17,7 @@ public class WebUtil {
 
     public static final int THREAD_AMOUNT = 6;
     public static String[] sources = new String[]{ // don't forget the final /
-            "http://localhost:8000/",
-            "http://localhost:8080/"
+            "http://raw.githubusercontent.com/nullTheCoder/VoWCompiled/master/"
     };
     private final ThreadPoolExecutor es;
 
@@ -74,8 +73,16 @@ public class WebUtil {
                 URL url = new URL(source + address);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setConnectTimeout(2000);
-                con.setRequestMethod("GET");
-                if (con.getResponseMessage().equals("OK")) {
+
+                String redirect = con.getHeaderField("Location");
+                if (redirect != null){
+                    con = (HttpURLConnection) new URL(redirect).openConnection();
+                    con.setConnectTimeout(2000);
+                }
+
+                String re = con.getResponseMessage();
+                System.out.println(re + " | " + redirect);
+                if (re.equals("OK")) {
                     stream = con.getInputStream();
 
                     // replace the element 0 with this one

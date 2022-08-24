@@ -2,3 +2,7 @@ wynnvp-1-12-2:
   path: "./jars/wynncraftvp-1.01.jar"
   name: "VoicesOfWynn MC1.12.2 v1.01"
   recommended-name: "VoicesOfWynn-1.01.jar"
+wynnvp-1-12-2-demo:
+  path: "./jars/VoicesOfWynn-MC1.12.2-vDemo.jar"
+  name: "VoicesOfWynn MC1.12.2 DEMO"
+  recommended-name: "VoicesOfWynn-Demo.jar"
