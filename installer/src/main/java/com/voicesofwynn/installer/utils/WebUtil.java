@@ -17,6 +17,7 @@ public class WebUtil {
 
     public static final int THREAD_AMOUNT = 6;
     public static String[] sources = new String[]{ // don't forget the final /
+            "http://localhost:8000/",
             "http://localhost:8080/"
     };
     private final ThreadPoolExecutor es;

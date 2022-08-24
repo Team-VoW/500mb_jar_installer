@@ -62,9 +62,10 @@ public class Main {
 
         // download chooser
         JComboBox<String> downloadChoose = new JComboBox<>();
-        JLabel downloadLabel = new JLabel("Download:");
+        JLabel downloadLabel = new JLabel("<Download>");
         downloadChoose.setBounds(5, 380, 340, 20);
-        downloadLabel.setBounds(10, 360, 340, 20);
+        downloadLabel.setBounds(10, 360, 330, 20);
+        downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (Map.Entry<String, WebUtil.remoteJar> jar : options.entrySet()) {
             downloadChoose.addItem(jar.getKey());
@@ -78,8 +79,10 @@ public class Main {
         chooserOpener.setText("open");
         chooserOpener.setBounds(278, 450, 70, 30);
 
-        JLabel downloadToLabel = new JLabel("Download to:");
-        downloadToLabel.setBounds(10, 430, 260, 30);
+        JLabel downloadToLabel = new JLabel("<Download to>");
+        downloadToLabel.setBounds(10, 430, 330, 30);
+        downloadToLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
 
         JTextArea downloadToRecommendationLabel = new JTextArea("If you already have a Voices of wynn jar downloaded, \nplease choose it, because it will profusely speed up \nyour download!");
         downloadToRecommendationLabel.setBounds(7, 480, 336, 50);
@@ -134,6 +137,7 @@ public class Main {
         feedback.setBounds(5, 550, 340, 40);
         JProgressBar progress = new JProgressBar();
         progress.setBounds(10, 590, 330, 10);
+        feedback.setHorizontalAlignment(SwingConstants.CENTER);
 
         jFrame.setLayout(null);
         jFrame.add(logo);
