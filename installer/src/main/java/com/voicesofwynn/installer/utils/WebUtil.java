@@ -7,15 +7,27 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class WebUtil {
 
+    public static final int THREAD_AMOUNT = 12;
     public static String[] sources = new String[]{ // don't forget the final /
             "http://69.6.1.70:25565/"
     };
+    private final ThreadPoolExecutor es;
+    private final ArrayList<Future> futureList;
+
+    public WebUtil(int amount) {
+        es = (ThreadPoolExecutor) Executors.newFixedThreadPool(THREAD_AMOUNT);
+        futureList = new ArrayList<>(amount);
+    }
 
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
         Map<String, remoteJar> list = new HashMap<>();
@@ -34,13 +46,6 @@ public class WebUtil {
         }
 
         return list;
-    }
-
-    public static byte[] getRemoteFile(String jar, String path) throws Exception {
-
-        BufferedInputStream r = new BufferedInputStream(getHttpStream(jar + "/" + path));
-
-        return r.readAllBytes();
     }
 
     public static Map<String, Long> getRemoteFilesFromCSV(String jar) throws Exception {
@@ -104,6 +109,29 @@ public class WebUtil {
             }
         }
         return false;
+    }
+
+    public int finished() {
+        return (int) es.getCompletedTaskCount();
+    }
+
+    public void getRemoteFile(String jar, String path, remoteFileGot rfg) {
+        futureList.add(es.submit(
+                () -> {
+                    try {
+                        InputStream s = getHttpStream(jar + "/" + path);
+
+                        rfg.run(s.readAllBytes());
+                    } catch (Exception e) {
+                        rfg.run(null);
+                    }
+                }
+        ));
+
+    }
+
+    public interface remoteFileGot {
+        void run(byte[] contents);
     }
 
     public record remoteJar(String recommendedFileName, String id) {

@@ -5,6 +5,7 @@ import com.voicesofwynn.installer.utils.WebUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.CRC32;
@@ -97,9 +98,10 @@ public class Installer {
                 count += 1;
             }
 
+            WebUtil webUtil = new WebUtil(toGet.size());
             count = 0;
             for (String fileNeeded : toGet) {
-                out.outState("Downloading " + fileNeeded + "!", count, toGet.size());
+                out.outState("Getting ready to get " + fileNeeded + "!", count, toGet.size());
                 System.out.println("Asking for " + fileNeeded);
 
                 File fileToCreate = new File(installCache.getPath() + "/" + fileNeeded);
@@ -107,12 +109,29 @@ public class Installer {
 
                 fileToCreate.delete();
 
-                FileOutputStream fOut = new FileOutputStream(fileToCreate);
+                webUtil.getRemoteFile(request, fileNeeded, (b) -> {
+                    try {
+                        FileOutputStream fOut = new FileOutputStream(fileToCreate);
 
-                fOut.write(WebUtil.getRemoteFile(request, fileNeeded));
+                        fOut.write(b);
 
-                fOut.close();
+                        fOut.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
                 count++;
+            }
+
+            int i = webUtil.finished();
+            while (i < toGet.size()) {
+
+                String msg = "Downloaded [" + i + "/" + toGet.size() + "]!";
+
+                System.out.println(msg);
+                out.outState(msg, i, toGet.size());
+                Thread.sleep(50);
+                i = webUtil.finished();
             }
 
         }

@@ -131,9 +131,9 @@ public class Main {
 
         // feedback
         JLabel feedback = new JLabel();
-        feedback.setBounds(5, 555, 340, 50);
+        feedback.setBounds(5, 550, 340, 40);
         JProgressBar progress = new JProgressBar();
-        progress.setBounds(10, 575, 330, 50);
+        progress.setBounds(10, 590, 330, 10);
 
         jFrame.setLayout(null);
         jFrame.add(logo);
