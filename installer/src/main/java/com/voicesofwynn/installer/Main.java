@@ -23,8 +23,12 @@ public class Main {
         try {
             Image img = ImageIO.read(Main.class.getResource("/wynnvplogo.png"));
             jFrame.setIconImage(img);
+
+            // mac stuff
             final Taskbar taskbar = Taskbar.getTaskbar();
             taskbar.setIconImage(img);
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Voices Of Wynn Installer");
         } catch (Exception e) {
             System.out.println("No taskbar?");
         }
@@ -58,13 +62,16 @@ public class Main {
                 throw new RuntimeException(ex);
             }
         });
-        logo.setBounds(0, 0, 350, 350);
+        logo.setBounds(0, 0, 370, 350);
+        logo.setOpaque(false);
+        logo.setContentAreaFilled(false);
+        logo.setBorderPainted(false);
 
         // download chooser
         JComboBox<String> downloadChoose = new JComboBox<>();
-        JLabel downloadLabel = new JLabel("<Download>");
-        downloadChoose.setBounds(5, 380, 340, 20);
-        downloadLabel.setBounds(10, 360, 330, 20);
+        JLabel downloadLabel = new JLabel("<html><b>Version To Download</b></html>");
+        downloadChoose.setBounds(15, 380, 340, 20);
+        downloadLabel.setBounds(20, 360, 330, 20);
         downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (Map.Entry<String, WebUtil.remoteJar> jar : options.entrySet()) {
@@ -74,20 +81,18 @@ public class Main {
 
         // file chooser
         JTextField path = new JTextField(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
-        path.setBounds(2, 450, 276, 30);
+        path.setBounds(12, 450, 276, 30);
         JButton chooserOpener = new JButton();
-        chooserOpener.setText("open");
-        chooserOpener.setBounds(278, 450, 70, 30);
+        chooserOpener.setText("Open");
+        chooserOpener.setBounds(288, 450, 70, 30);
 
-        JLabel downloadToLabel = new JLabel("<Download to>");
-        downloadToLabel.setBounds(10, 430, 330, 30);
+        JLabel downloadToLabel = new JLabel("<html><b>Download To</b></html>");
+        downloadToLabel.setBounds(20, 430, 330, 30);
         downloadToLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 
-        JTextArea downloadToRecommendationLabel = new JTextArea("If you already have a Voices of wynn jar downloaded, \nplease choose it, because it will profusely speed up \nyour download!");
-        downloadToRecommendationLabel.setBounds(7, 480, 336, 50);
-        downloadToRecommendationLabel.setEditable(false);
-        downloadToRecommendationLabel.setLineWrap(false);
+        JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of wynn jar downloaded, <br>please choose it, because it will profusely speed up <br>your download!</html>");
+        downloadToRecommendationLabel.setBounds(17, 480, 336, 50);
 
         path.addActionListener(e -> {
             path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
@@ -98,7 +103,7 @@ public class Main {
         });
 
         chooserOpener.addActionListener(e -> {
-            JFrame open = new JFrame("browse");
+            JFrame open = new JFrame("Browse");
 
             JFileChooser chooser = new JFileChooser(new File(path.getText()));
             File loc = new File(path.getText());
@@ -130,13 +135,13 @@ public class Main {
         // install button
         JButton install = new JButton();
         install.setText("Install");
-        install.setBounds(5, 600, 340, 45);
+        install.setBounds(15, 600, 340, 45);
 
         // feedback
         JLabel feedback = new JLabel();
-        feedback.setBounds(5, 550, 340, 40);
+        feedback.setBounds(15, 550, 340, 40);
         JProgressBar progress = new JProgressBar();
-        progress.setBounds(10, 590, 330, 10);
+        progress.setBounds(20, 590, 330, 10);
         feedback.setHorizontalAlignment(SwingConstants.CENTER);
 
         jFrame.setLayout(null);
@@ -152,7 +157,7 @@ public class Main {
         jFrame.add(downloadLabel);
         jFrame.add(downloadToRecommendationLabel);
 
-        jFrame.setSize(350, 675);
+        jFrame.setSize(370, 685);
 
         jFrame.setResizable(false);
 
