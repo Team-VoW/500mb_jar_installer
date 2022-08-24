@@ -98,7 +98,7 @@ public class Installer {
                 count += 1;
             }
 
-            WebUtil webUtil = new WebUtil(toGet.size());
+            WebUtil webUtil = new WebUtil();
             count = 0;
             for (String fileNeeded : toGet) {
                 out.outState("Getting ready to get " + fileNeeded + "!", count, toGet.size());

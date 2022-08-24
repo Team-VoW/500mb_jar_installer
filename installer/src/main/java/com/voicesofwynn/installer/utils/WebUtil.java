@@ -7,26 +7,22 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class WebUtil {
 
-    public static final int THREAD_AMOUNT = 12;
+    public static final int THREAD_AMOUNT = 6;
     public static String[] sources = new String[]{ // don't forget the final /
-            "http://69.6.1.70:25565/"
+            "http://localhost:8080/"
     };
     private final ThreadPoolExecutor es;
-    private final ArrayList<Future> futureList;
 
-    public WebUtil(int amount) {
+    public WebUtil() {
         es = (ThreadPoolExecutor) Executors.newFixedThreadPool(THREAD_AMOUNT);
-        futureList = new ArrayList<>(amount);
     }
 
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
@@ -116,7 +112,7 @@ public class WebUtil {
     }
 
     public void getRemoteFile(String jar, String path, remoteFileGot rfg) {
-        futureList.add(es.submit(
+        es.submit(
                 () -> {
                     try {
                         InputStream s = getHttpStream(jar + "/" + path);
@@ -126,7 +122,7 @@ public class WebUtil {
                         rfg.run(null);
                     }
                 }
-        ));
+        );
 
     }
 
