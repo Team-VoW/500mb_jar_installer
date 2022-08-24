@@ -14,7 +14,7 @@ import java.util.Map;
 public class WebUtil {
 
     public static String[] sources = new String[]{ // don't forget the final /
-            "http://localhost:8080/"
+            "http://69.6.1.70:25565/"
     };
 
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
@@ -66,13 +66,20 @@ public class WebUtil {
     public static InputStream getHttpStream(String address) throws IOException {
 
         InputStream stream = null;
+        int i = 0;
         for (String source : sources) {
             try {
                 URL url = new URL(source + address);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setConnectTimeout(2000);
                 con.setRequestMethod("GET");
                 if (con.getResponseMessage().equals("OK")) {
                     stream = con.getInputStream();
+
+                    // replace the element 0 with this one
+                    String zero = sources[0];
+                    sources[0] = sources[i];
+                    sources[i] = zero;
                 } else {
                     throw new IOException();
                 }
@@ -80,6 +87,7 @@ public class WebUtil {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            i++;
         }
 
         return stream;

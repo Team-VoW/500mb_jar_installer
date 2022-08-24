@@ -16,9 +16,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
 
-    public static String IP = "localhost";
-    public static int PORT = 7878;
-
     public static void main(String[] args) {
 
         JFrame jFrame = new JFrame("Voices Of Wynn Installer");
@@ -28,8 +25,8 @@ public class Main {
             jFrame.setIconImage(img);
             final Taskbar taskbar = Taskbar.getTaskbar();
             taskbar.setIconImage(img);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("No taskbar?");
         }
 
         final Map<String, WebUtil.remoteJar> options;
@@ -66,8 +63,8 @@ public class Main {
         // download chooser
         JComboBox<String> downloadChoose = new JComboBox<>();
         JLabel downloadLabel = new JLabel("Download:");
-        downloadChoose.setBounds(0, 400, 350, 50);
-        downloadLabel.setBounds(0, 380, 350, 50);
+        downloadChoose.setBounds(5, 380, 340, 20);
+        downloadLabel.setBounds(10, 360, 340, 20);
 
         for (Map.Entry<String, WebUtil.remoteJar> jar : options.entrySet()) {
             downloadChoose.addItem(jar.getKey());
@@ -76,18 +73,18 @@ public class Main {
 
         // file chooser
         JTextField path = new JTextField(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
-        path.setBounds(0, 500, 300, 50);
+        path.setBounds(2, 450, 276, 30);
         JButton chooserOpener = new JButton();
         chooserOpener.setText("open");
-        chooserOpener.setBounds(300, 500, 50, 50);
+        chooserOpener.setBounds(278, 450, 70, 30);
 
         JLabel downloadToLabel = new JLabel("Download to:");
-        downloadToLabel.setBounds(0, 470, 350, 50);
+        downloadToLabel.setBounds(10, 430, 260, 30);
 
-        JTextArea downloadToRecommendationLabel = new JTextArea("If you already have a version Voices of wynn please \nchoose it because it will speed up your download to at least 5x times faster!");
-        downloadToRecommendationLabel.setBounds(0, 550, 350, 100);
+        JTextArea downloadToRecommendationLabel = new JTextArea("If you already have a Voices of wynn jar downloaded, \nplease choose it, because it will profusely speed up \nyour download!");
+        downloadToRecommendationLabel.setBounds(7, 480, 336, 50);
         downloadToRecommendationLabel.setEditable(false);
-        downloadToRecommendationLabel.setLineWrap(true);
+        downloadToRecommendationLabel.setLineWrap(false);
 
         path.addActionListener(e -> {
             path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
@@ -130,13 +127,13 @@ public class Main {
         // install button
         JButton install = new JButton();
         install.setText("Install");
-        install.setBounds(0, 625, 350, 50);
+        install.setBounds(5, 600, 340, 45);
 
         // feedback
         JLabel feedback = new JLabel();
-        feedback.setBounds(0, 580, 350, 50);
+        feedback.setBounds(5, 555, 340, 50);
         JProgressBar progress = new JProgressBar();
-        progress.setBounds(0, 600, 350, 50);
+        progress.setBounds(10, 575, 330, 50);
 
         jFrame.setLayout(null);
         jFrame.add(logo);
@@ -151,7 +148,7 @@ public class Main {
         jFrame.add(downloadLabel);
         jFrame.add(downloadToRecommendationLabel);
 
-        jFrame.setSize(350, 700);
+        jFrame.setSize(350, 675);
 
         jFrame.setResizable(false);
 
