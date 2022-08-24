@@ -13,12 +13,9 @@ import java.util.Map;
 
 public class WebUtil {
 
-    public static String[] sources = new String[] { // don't forget the final /
+    public static String[] sources = new String[]{ // don't forget the final /
             "http://localhost:8080/"
     };
-
-
-    public record remoteJar(String recommendedFileName, String id) { }
 
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
         Map<String, remoteJar> list = new HashMap<>();
@@ -28,7 +25,7 @@ public class WebUtil {
         String str = new String(r.readAllBytes());
         String[] strs = str.split("\n");
 
-        for (int i = 1 ; i < strs.length ; i++) {
+        for (int i = 1; i < strs.length; i++) {
             String s = strs[i];
             if (s.length() < 1) continue;
 
@@ -54,7 +51,7 @@ public class WebUtil {
         String str = new String(r.readAllBytes());
         String[] strs = str.split("\n");
 
-        for (int i = 1 ; i < strs.length ; i++) {
+        for (int i = 1; i < strs.length; i++) {
             String s = strs[i];
             if (s.length() < 1) continue;
 
@@ -99,6 +96,9 @@ public class WebUtil {
             }
         }
         return false;
+    }
+
+    public record remoteJar(String recommendedFileName, String id) {
     }
 
 }

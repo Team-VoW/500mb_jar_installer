@@ -1,8 +1,6 @@
 use std::{fs, io};
-use std::alloc::System;
 use std::fs::read;
 use std::path::Path;
-use std::time::SystemTime;
 use crc32fast::Hasher;
 
 pub fn unarchive_archive<'a>(id: String, name: String, recommended_name: String, file_link: String) -> String {

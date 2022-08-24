@@ -21,7 +21,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        JFrame jFrame = new JFrame("Voices of Wynn installer");
+        JFrame jFrame = new JFrame("Voices Of Wynn Installer");
 
         try {
             Image img = ImageIO.read(Main.class.getResource("/wynnvplogo.png"));
@@ -135,6 +135,8 @@ public class Main {
         // feedback
         JLabel feedback = new JLabel();
         feedback.setBounds(0, 580, 350, 50);
+        JProgressBar progress = new JProgressBar();
+        progress.setBounds(0, 600, 350, 50);
 
         jFrame.setLayout(null);
         jFrame.add(logo);
@@ -143,6 +145,7 @@ public class Main {
         jFrame.add(chooserOpener);
         jFrame.add(install);
         jFrame.add(feedback);
+        jFrame.add(progress);
 
         jFrame.add(downloadToLabel);
         jFrame.add(downloadLabel);
@@ -162,8 +165,10 @@ public class Main {
 
             InstallerOut out = new InstallerOut() {
                 @Override
-                public void outState(String str) {
+                public void outState(String str, int done, int needed) {
                     feedback.setText(str);
+                    progress.setMaximum(needed);
+                    progress.setValue(done);
                 }
             };
 
@@ -181,6 +186,8 @@ public class Main {
 
                     Installer.install(f, out, jar.id());
                     feedback.setText("Done");
+                    progress.setValue(100);
+                    progress.setMaximum(100);
                     String rec = jar.recommendedFileName();
                     if (!f.getName().equals(rec)) {
                         int o = JOptionPane.showConfirmDialog(jFrame, "Would you like to rename " + f.getName() + " to recommended " + rec + "?");
@@ -195,7 +202,7 @@ public class Main {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    out.outState("Something went wrong, please retry");
+                    out.outState("Something went wrong, please retry", 1, 1);
                     working.set(false);
                     feedback.setText("Failed");
                     JOptionPane.showMessageDialog(jFrame, "Failed to download the file :( \nPlease retry in a bit.");

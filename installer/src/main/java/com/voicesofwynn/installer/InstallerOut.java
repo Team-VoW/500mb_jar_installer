@@ -1,5 +1,5 @@
 package com.voicesofwynn.installer;
 
 public abstract class InstallerOut {
-    public abstract void outState(String str);
+    public abstract void outState(String str, int progress, int left);
 }
