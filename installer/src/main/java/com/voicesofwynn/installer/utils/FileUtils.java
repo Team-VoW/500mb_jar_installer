@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +16,52 @@ import java.util.zip.ZipOutputStream;
 
 public class FileUtils {
 
+    public static File getCachingFileLocation () {
+        String file = "voicesOfWynnInstallLocationCache.txt";
+        String os = System.getProperty("os.name");
+
+        if (os.toLowerCase().contains("windows")) {
+            return new File(System.getenv("APPDATA") + "/" + file);
+        } else if (os.toLowerCase().contains("mac")) {
+            return new File(System.getProperty("user.home") + "/Library/Application Support/" + file);
+        } else if (os.toLowerCase().contains("linux")) {
+            return new File(System.getProperty("user.home") + "/" + file);
+        }
+
+        return new File("./" + file);
+    }
+
     public static String getPreferredFileLocation(String str, String preferredName) {
+        File cache = getCachingFileLocation();
         if (str == null || str.equals("")) {
             String os = System.getProperty("os.name");
+
+            if (cache.exists()) {
+                try {
+                    return Files.readString(cache.toPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
             if (os.toLowerCase().contains("windows")) {
                 return System.getenv("APPDATA") + "/.minecraft/mods/" + preferredName;
             } else if (os.toLowerCase().contains("mac")) {
+                String arch = System.getProperty("os.arch");
+                if (arch.equals("aarch64")) { // is the person using many mc?
+                    File manymcFolder = new File(System.getProperty("user.home") + "/Library/Application Support/manyMC");
+                    if (manymcFolder.exists()) {
+                        File instances = new File(System.getProperty("user.home") + "/Library/Application Support/manyMC/instances");
+                        if (instances.exists() && instances.isDirectory()) {
+                            for (File f : instances.listFiles()) {
+                                if (f.getName().toLowerCase().contains("wynn")) {
+                                    return f.getPath() + "/mods/" + preferredName;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return System.getProperty("user.home") + "/Library/Application Support/minecraft/mods/" + preferredName;
             } else if (os.toLowerCase().contains("linux")) {
                 return System.getProperty("user.home") + "/.minecraft/mods/" + preferredName;
@@ -32,7 +73,13 @@ public class FileUtils {
         File f = new File(str);
         if (f.isDirectory()) {
             if (!str.endsWith("/")) str += "/";
-            return str + preferredName;
+            str += preferredName;
+        }
+
+        try {
+            Files.writeString(cache.toPath(), str);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return str;

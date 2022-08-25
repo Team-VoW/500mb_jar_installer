@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class WebUtil {
 
-    public static final int THREAD_AMOUNT = 6;
+    public static final int THREAD_AMOUNT = 8;
     public static String[] sources = new String[]{ // don't forget the final /
             "http://raw.githubusercontent.com/nullTheCoder/VoWCompiled/master/"
     };
@@ -32,6 +32,8 @@ public class WebUtil {
 
         String str = new String(r.readAllBytes());
         String[] strs = str.split("\n");
+
+        System.out.println(str);
 
         for (int i = 1; i < strs.length; i++) {
             String s = strs[i];
@@ -51,6 +53,7 @@ public class WebUtil {
 
         String str = new String(r.readAllBytes());
         String[] strs = str.split("\n");
+
 
         for (int i = 1; i < strs.length; i++) {
             String s = strs[i];
@@ -81,7 +84,6 @@ public class WebUtil {
                 }
 
                 String re = con.getResponseMessage();
-                System.out.println(re + " | " + redirect);
                 if (re.equals("OK")) {
                     stream = con.getInputStream();
 

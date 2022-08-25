@@ -62,7 +62,6 @@ public class Main {
                 throw new RuntimeException(ex);
             }
         });
-        logo.setBounds(0, 0, 370, 350);
         logo.setOpaque(false);
         logo.setContentAreaFilled(false);
         logo.setBorderPainted(false);
@@ -70,8 +69,7 @@ public class Main {
         // download chooser
         JComboBox<String> downloadChoose = new JComboBox<>();
         JLabel downloadLabel = new JLabel("<html><b>Version To Download</b></html>");
-        downloadChoose.setBounds(15, 380, 340, 20);
-        downloadLabel.setBounds(20, 360, 330, 20);
+        downloadChoose.setMaximumSize(new Dimension(350, 30));
         downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (Map.Entry<String, WebUtil.remoteJar> jar : options.entrySet()) {
@@ -81,18 +79,14 @@ public class Main {
 
         // file chooser
         JTextField path = new JTextField(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
-        path.setBounds(12, 450, 276, 30);
         JButton chooserOpener = new JButton();
         chooserOpener.setText("Open");
-        chooserOpener.setBounds(288, 450, 70, 30);
 
         JLabel downloadToLabel = new JLabel("<html><b>Download To</b></html>");
-        downloadToLabel.setBounds(20, 430, 330, 30);
-        downloadToLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 
         JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of wynn jar downloaded, <br>please choose it, because it will profusely speed up <br>your download!</html>");
-        downloadToRecommendationLabel.setBounds(17, 480, 336, 50);
+        downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 
         path.addActionListener(e -> {
             path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
@@ -132,32 +126,76 @@ public class Main {
 
         });
 
+        JPanel pathPanel = new JPanel();
+        pathPanel.setLayout(new BoxLayout(pathPanel, BoxLayout.X_AXIS));
+        pathPanel.setMaximumSize(new Dimension(350, 30));
+        path.setBounds(new Rectangle(300, 40));
+        downloadChoose.setBounds(new Rectangle(50, 30));
+        pathPanel.add(path);
+        pathPanel.add(chooserOpener);
+
         // install button
         JButton install = new JButton();
         install.setText("Install");
-        install.setBounds(15, 600, 340, 45);
+        install.setMaximumSize(new Dimension(350, 30));
 
         // feedback
         JLabel feedback = new JLabel();
-        feedback.setBounds(15, 550, 340, 40);
         JProgressBar progress = new JProgressBar();
-        progress.setBounds(20, 590, 330, 10);
+        progress.setMaximumSize(new Dimension(330, 10));
         feedback.setHorizontalAlignment(SwingConstants.CENTER);
 
-        jFrame.setLayout(null);
-        jFrame.add(logo);
-        jFrame.add(downloadChoose);
-        jFrame.add(path);
-        jFrame.add(chooserOpener);
-        jFrame.add(install);
-        jFrame.add(feedback);
-        jFrame.add(progress);
+        downloadToLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        jFrame.add(downloadToLabel);
-        jFrame.add(downloadLabel);
-        jFrame.add(downloadToRecommendationLabel);
+        //footing
+        JPanel footing = new JPanel();
+        footing.setMaximumSize(new Dimension(15, 10));
 
-        jFrame.setSize(370, 685);
+
+        logo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        downloadChoose.setAlignmentX(Component.CENTER_ALIGNMENT);
+        path.setAlignmentX(Component.CENTER_ALIGNMENT);
+        chooserOpener.setAlignmentX(Component.CENTER_ALIGNMENT);
+        install.setAlignmentX(Component.CENTER_ALIGNMENT);
+        feedback.setAlignmentX(Component.CENTER_ALIGNMENT);
+        progress.setAlignmentX(Component.CENTER_ALIGNMENT);
+        downloadLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        downloadToLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        downloadToRecommendationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        String os = System.getProperty("os.name");
+
+        if (os.toLowerCase().contains("windows") || os.toLowerCase().contains("linux")) {
+            Color bc = new Color(170, 170, 170);
+
+            downloadChoose.setBackground(bc);
+            install.setBackground(bc);
+            chooserOpener.setBackground(bc);
+
+            logo.setFocusPainted(false);
+        }
+
+
+        Container contentPane = jFrame.getContentPane();
+        BoxLayout l = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
+
+        contentPane.setLayout(l);
+
+        contentPane.add(logo);
+        contentPane.add(downloadLabel);
+        contentPane.add(downloadChoose);
+        contentPane.add(new JPanel());
+        contentPane.add(downloadToLabel);
+        contentPane.add(pathPanel);
+        contentPane.add(downloadToRecommendationLabel);
+        contentPane.add(new JPanel());
+        contentPane.add(feedback);
+        contentPane.add(progress);
+        contentPane.add(install);
+        contentPane.add(footing);
+
+
+        jFrame.setSize(370, 700);
 
         jFrame.setResizable(false);
 
