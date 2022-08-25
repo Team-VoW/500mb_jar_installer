@@ -49,9 +49,9 @@ public class Main {
         // logo
         JButton logo = new JButton();
         try {
+            logo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             ImageIcon icon = new ImageIcon(ImageIO.read(Main.class.getResource("/wynnvplogo.png")).getScaledInstance(350, 350, Image.SCALE_FAST));
             logo.setIcon(icon);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -68,7 +68,7 @@ public class Main {
 
         // download chooser
         JComboBox<String> downloadChoose = new JComboBox<>();
-        JLabel downloadLabel = new JLabel("<html><b>Version To Download</b></html>");
+        JLabel downloadLabel = new JLabel("<html><strong>Version To Download</strong></html>");
         downloadChoose.setMaximumSize(new Dimension(350, 30));
         downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -82,10 +82,11 @@ public class Main {
         JButton chooserOpener = new JButton();
         chooserOpener.setText("Open");
 
-        JLabel downloadToLabel = new JLabel("<html><b>Download To</b></html>");
+        JLabel downloadToLabel = new JLabel("<html><strong>Download To</strong></html>");
 
 
-        JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of wynn jar downloaded, <br>please choose it, because it will profusely speed up <br>your download!</html>");
+
+        JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of Wynn jar downloaded, <br>please choose it, because it will profusely speed up <br>your download!</html>");
         downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 
         path.addActionListener(e -> {

@@ -45,7 +45,7 @@ public class FileUtils {
             }
 
             if (os.toLowerCase().contains("windows")) {
-                return System.getenv("APPDATA") + "/.minecraft/mods/" + preferredName;
+                return System.getenv("APPDATA").replace("\\", "/") + "/.minecraft/mods/" + preferredName;
             } else if (os.toLowerCase().contains("mac")) {
                 String arch = System.getProperty("os.arch");
                 if (arch.equals("aarch64")) { // is the person using many mc?
