@@ -226,7 +226,7 @@ public class Main {
 
             File f = new File(path.getText());
             if (f.exists()) {
-                int o = JOptionPane.showConfirmDialog(jFrame, "By proceeding the file [" + f.getPath() + "] will be overwritten.", "Are you sure?", JOptionPane.YES_NO_OPTION);
+                int o = JOptionPane.showConfirmDialog(jFrame, "By proceeding, the file [" + f.getPath() + "] will be overwritten by the update.", "Confirm Update", JOptionPane.YES_NO_OPTION);
 
                 if (o != JOptionPane.OK_OPTION) {
                     return;
@@ -242,7 +242,7 @@ public class Main {
                     progress.setMaximum(100);
                     String rec = jar.recommendedFileName();
                     if (!f.getName().equals(rec)) {
-                        int o = JOptionPane.showConfirmDialog(jFrame, "Would you like to rename " + f.getName() + " to recommended " + rec + "?", "Would you like to rename the file?", JOptionPane.YES_NO_OPTION);
+                        int o = JOptionPane.showConfirmDialog(jFrame, "Update successful.\nShould " + f.getName() + " be renamed to " + rec + "?", "Rename Updated File?", JOptionPane.YES_NO_OPTION);
 
                         if (o == JOptionPane.OK_OPTION) {
                             f.renameTo(new File(f.getParent() + "/" + rec));
