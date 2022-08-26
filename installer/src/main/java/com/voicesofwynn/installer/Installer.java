@@ -22,7 +22,13 @@ public class Installer {
             // check if jar exists
             if (jarFile.exists()) {
                 // unzip it
-                FileUtils.unzip(jarFile.getPath(), installCache.getPath());
+                try {
+                    FileUtils.unzip(jarFile.getPath(), installCache.getPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Jar provided is corrupt");
+                    out.corruptJar();
+                }
             }
         } else {
             System.out.println("Cache dir exists which is not supposed to happen");

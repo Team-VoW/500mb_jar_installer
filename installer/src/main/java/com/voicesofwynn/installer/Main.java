@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -69,7 +70,7 @@ public class Main {
         // download chooser
         JComboBox<String> downloadChoose = new JComboBox<>();
         JLabel downloadLabel = new JLabel("<html><strong>Version To Download</strong></html>");
-        downloadChoose.setMaximumSize(new Dimension(350, 30));
+        downloadChoose.setMaximumSize(new Dimension(430, 30));
         downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         for (Map.Entry<String, WebUtil.remoteJar> jar : options.entrySet()) {
@@ -86,15 +87,19 @@ public class Main {
 
 
 
-        JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of Wynn jar downloaded, <br>please choose it, because it will profusely speed up <br>your download!</html>");
+        JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of Wynn jar downloaded, please choose it, because it will profusely speed up your download!</html>");
         downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+        downloadToRecommendationLabel.setMaximumSize(new Dimension(430, 50));
 
         path.addActionListener(e -> {
             path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
         });
 
         downloadChoose.addActionListener(a -> {
-            path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
+            File f = new File(path.getText());
+            if (!f.exists()) {
+                path.setText(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
+            }
         });
 
         chooserOpener.addActionListener(e -> {
@@ -102,6 +107,7 @@ public class Main {
 
             JFileChooser chooser = new JFileChooser(new File(path.getText()));
             File loc = new File(path.getText());
+            loc = loc.isFile() ? loc.getParentFile() : loc;
             if (loc.isFile()) loc = loc.getParentFile();
             chooser.setCurrentDirectory(loc);
 
@@ -129,21 +135,20 @@ public class Main {
 
         JPanel pathPanel = new JPanel();
         pathPanel.setLayout(new BoxLayout(pathPanel, BoxLayout.X_AXIS));
-        pathPanel.setMaximumSize(new Dimension(350, 30));
-        path.setBounds(new Rectangle(300, 40));
-        downloadChoose.setBounds(new Rectangle(50, 30));
+        pathPanel.setMaximumSize(new Dimension(430, 30));
+        path.setBounds(new Rectangle(400, 40));
         pathPanel.add(path);
         pathPanel.add(chooserOpener);
 
         // install button
         JButton install = new JButton();
         install.setText("Install");
-        install.setMaximumSize(new Dimension(350, 30));
+        install.setMaximumSize(new Dimension(430, 30));
 
         // feedback
         JLabel feedback = new JLabel();
         JProgressBar progress = new JProgressBar();
-        progress.setMaximumSize(new Dimension(330, 10));
+        progress.setMaximumSize(new Dimension(430, 10));
         feedback.setHorizontalAlignment(SwingConstants.CENTER);
 
         downloadToLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -196,17 +201,14 @@ public class Main {
         contentPane.add(footing);
 
 
-        jFrame.setSize(370, 700);
+        jFrame.setSize(450, 650);
 
         jFrame.setResizable(false);
 
         jFrame.setVisible(true);
 
-        AtomicBoolean working = new AtomicBoolean(false);
-
         install.addActionListener(ev -> {
-            if (working.get()) return;
-            working.set(true);
+            jFrame.setEnabled(false);
 
             InstallerOut out = new InstallerOut() {
                 @Override
@@ -215,27 +217,32 @@ public class Main {
                     progress.setMaximum(needed);
                     progress.setValue(done);
                 }
+
+                @Override
+                public void corruptJar() {
+                    JOptionPane.showMessageDialog(jFrame, "The jar provided is corrupt so the mod will have to be downloaded from 0.");
+                }
             };
+
+            File f = new File(path.getText());
+            if (f.exists()) {
+                int o = JOptionPane.showConfirmDialog(jFrame, "By proceeding the file [" + f.getPath() + "] will be overwritten.", "Are you sure?", JOptionPane.YES_NO_OPTION);
+
+                if (o != JOptionPane.OK_OPTION) {
+                    return;
+                }
+            }
+            WebUtil.remoteJar jar = options.get((String) downloadChoose.getSelectedItem());
 
             new Thread(() -> {
                 try {
-                    File f = new File(path.getText());
-                    if (f.exists()) {
-                        int o = JOptionPane.showConfirmDialog(jFrame, "By proceeding the file [" + f.getPath() + "] will be overwritten.");
-
-                        if (o != JOptionPane.OK_OPTION) {
-                            return;
-                        }
-                    }
-                    WebUtil.remoteJar jar = options.get((String) downloadChoose.getSelectedItem());
-
                     Installer.install(f, out, jar.id());
-                    feedback.setText("Done");
+                    feedback.setText("");
                     progress.setValue(100);
                     progress.setMaximum(100);
                     String rec = jar.recommendedFileName();
                     if (!f.getName().equals(rec)) {
-                        int o = JOptionPane.showConfirmDialog(jFrame, "Would you like to rename " + f.getName() + " to recommended " + rec + "?");
+                        int o = JOptionPane.showConfirmDialog(jFrame, "Would you like to rename " + f.getName() + " to recommended " + rec + "?", "Would you like to rename the file?", JOptionPane.YES_NO_OPTION);
 
                         if (o == JOptionPane.OK_OPTION) {
                             f.renameTo(new File(f.getParent() + "/" + rec));
@@ -243,15 +250,14 @@ public class Main {
                     }
 
                     JOptionPane.showMessageDialog(jFrame, "Done!");
-                    working.set(false);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     out.outState("Something went wrong, please retry", 1, 1);
-                    working.set(false);
                     feedback.setText("Failed");
                     JOptionPane.showMessageDialog(jFrame, "Failed to download the file :( \nPlease retry in a bit.");
                 }
+                jFrame.setEnabled(true);
             }).start();
         });
 
