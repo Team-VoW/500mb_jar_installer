@@ -208,7 +208,7 @@ public class Main {
 
         final Thread[] t = new Thread[1];
         install.addActionListener(ev -> {
-            if (t[0] != null) {
+            if (t[0] != null && t[0].isAlive()) {
                 t[0].stop();
                 path.setEnabled(true);
                 chooserOpener.setEnabled(true);
@@ -263,6 +263,7 @@ public class Main {
 
                         if (o == JOptionPane.OK_OPTION) {
                             f.renameTo(new File(f.getParent() + "/" + rec));
+                            path.setText(FileUtils.getPreferredFileLocation(null, jar.recommendedFileName()));
                         }
                     }
 

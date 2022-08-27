@@ -12,7 +12,7 @@ import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class Installer {
-    public static boolean install(File jarFile, InstallerOut out, String request) throws Exception {
+    public static void install(File jarFile, InstallerOut out, String request) throws Exception {
         // create a cache dir
         out.outState("Unpacking the current jar!", 0, 1);
         File installCache = new File(jarFile.getParent() + "/installer_cache");
@@ -32,7 +32,6 @@ public class Installer {
             }
         } else {
             System.out.println("Cache dir exists which is not supposed to happen");
-
         }
         out.outState("Connecting to server to see what changed in " + request + "!", 1, 3);
         // connect to server and get the changes
@@ -140,6 +139,23 @@ public class Installer {
                 i = webUtil.finished();
             }
 
+            fileMap = WebUtil.getRemoteFilesFromCSV(request);
+
+            for (String fileNeeded : toGet) {
+                out.outState("Checking integrity of " + fileNeeded + "!", count, toGet.size());
+
+                File fileToCheck = new File(installCache.getPath() + "/" + fileNeeded);
+
+                Checksum crc32 = new CRC32();
+                byte[] b = Files.readAllBytes(fileToCheck.toPath());
+                crc32.update(b, 0, b.length);
+                long hash = crc32.getValue();
+
+                if (hash != fileMap.get(fileNeeded)) {
+                    throw new RuntimeException("Files are incorrect.");
+                }
+            }
+
         }
 
 
@@ -148,7 +164,5 @@ public class Installer {
         FileUtils.zip(installCache, jarFile);
 
         FileUtils.deleteDir(installCache);
-
-        return true;
     }
 }
