@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.zip.ZipOutputStream;
 
 public class FileUtils {
 
-    public static File getCachingFileLocation () {
+    public static File getCachingFileLocation() {
         String file = "voicesOfWynnInstallLocationCache.txt";
         String os = System.getProperty("os.name");
 
@@ -38,7 +36,41 @@ public class FileUtils {
 
             if (cache.exists()) {
                 try {
-                    return Files.readString(cache.toPath());
+                    String c = Files.readString(cache.toPath());
+                    File f = new File(c);
+                    if (f.getParentFile().exists() && !f.exists() || f.isDirectory()) {
+                        if (f.isDirectory() || !f.exists()) {
+                            f = f.getParentFile();
+                            c = f.getPath();
+                        }
+
+                        if (!c.endsWith("/")) {
+                            c += "/";
+                        }
+
+                        for (File fl : f.listFiles()) {
+                            String sub = fl.getName().toLowerCase().replace(" ", "").replace("_", "").replace("-", "");
+                            if (sub.contains("voicesofwynn") || sub.contains("voices") && sub.contains("wynn") || sub.contains("vynnvp")) {
+                                c += fl.getName();
+                                break;
+                            }
+                        }
+
+                        f = new File(c);
+                        if (f.isDirectory()) {
+                            c += preferredName;
+                        }
+
+                        try {
+                            Files.writeString(cache.toPath(), c);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        return c;
+                    } else if (f.exists()) {
+                        return c;
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -73,7 +105,19 @@ public class FileUtils {
         File f = new File(str);
         if (f.isDirectory()) {
             if (!str.endsWith("/")) str += "/";
-            str += preferredName;
+
+            for (File fl : f.listFiles()) {
+                String sub = fl.getName().toLowerCase().replace(" ", "").replace("_", "").replace("-", "");
+                if (sub.contains("voicesofwynn") || sub.contains("voices") && sub.contains("wynn") || sub.contains("vynnvp")) {
+                    str += fl.getName();
+                    break;
+                }
+            }
+
+            f = new File(str);
+            if (f.isDirectory()) {
+                str += preferredName;
+            }
         }
 
         try {
@@ -81,6 +125,8 @@ public class FileUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        str.replace("\\", "/");
 
         return str;
     }

@@ -78,7 +78,7 @@ public class WebUtil {
                 con.setConnectTimeout(2000);
 
                 String redirect = con.getHeaderField("Location");
-                if (redirect != null){
+                if (redirect != null) {
                     con = (HttpURLConnection) new URL(redirect).openConnection();
                     con.setConnectTimeout(2000);
                 }

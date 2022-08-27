@@ -7,13 +7,11 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
 
@@ -86,7 +84,6 @@ public class Main {
         JLabel downloadToLabel = new JLabel("<html><strong>Download To</strong></html>");
 
 
-
         JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of Wynn jar downloaded, please choose it, because it will profusely speed up your download!</html>");
         downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
         downloadToRecommendationLabel.setMaximumSize(new Dimension(430, 50));
@@ -108,6 +105,7 @@ public class Main {
             JFileChooser chooser = new JFileChooser(new File(path.getText()));
             File loc = new File(path.getText());
             loc = loc.isFile() ? loc.getParentFile() : loc;
+
             if (loc.isFile()) loc = loc.getParentFile();
             chooser.setCurrentDirectory(loc);
 
@@ -126,7 +124,8 @@ public class Main {
             });
 
             chooser.addActionListener(actionEvent -> {
-                path.setText(FileUtils.getPreferredFileLocation(chooser.getSelectedFile().getPath(), options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
+                if (actionEvent.getActionCommand().equals("ApproveSelection"))
+                    path.setText(FileUtils.getPreferredFileLocation(chooser.getSelectedFile().getPath(), options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
             });
 
             chooser.showOpenDialog(open);
@@ -207,8 +206,22 @@ public class Main {
 
         jFrame.setVisible(true);
 
+        final Thread[] t = new Thread[1];
         install.addActionListener(ev -> {
-            jFrame.setEnabled(false);
+            if (t[0] != null) {
+                t[0].stop();
+                path.setEnabled(true);
+                chooserOpener.setEnabled(true);
+                downloadChoose.setEnabled(true);
+                install.setText("Install");
+                feedback.setText("Cancelled, (The download cache folder still exists in that folder.)");
+                return;
+            }
+
+            path.setEnabled(false);
+            chooserOpener.setEnabled(false);
+            downloadChoose.setEnabled(false);
+            install.setText("Cancel");
 
             InstallerOut out = new InstallerOut() {
                 @Override
@@ -229,12 +242,16 @@ public class Main {
                 int o = JOptionPane.showConfirmDialog(jFrame, "By proceeding, the file [" + f.getPath() + "] will be overwritten by the update.", "Confirm Update", JOptionPane.YES_NO_OPTION);
 
                 if (o != JOptionPane.OK_OPTION) {
+                    path.setEnabled(true);
+                    chooserOpener.setEnabled(true);
+                    downloadChoose.setEnabled(true);
+                    install.setText("Install");
                     return;
                 }
             }
             WebUtil.remoteJar jar = options.get((String) downloadChoose.getSelectedItem());
 
-            new Thread(() -> {
+            t[0] = new Thread(() -> {
                 try {
                     Installer.install(f, out, jar.id());
                     feedback.setText("");
@@ -257,8 +274,12 @@ public class Main {
                     feedback.setText("Failed");
                     JOptionPane.showMessageDialog(jFrame, "Failed to download the file :( \nPlease retry in a bit.");
                 }
-                jFrame.setEnabled(true);
-            }).start();
+                path.setEnabled(true);
+                chooserOpener.setEnabled(true);
+                downloadChoose.setEnabled(true);
+                install.setText("Install");
+            });
+            t[0].start();
         });
 
 
