@@ -126,7 +126,7 @@ public class FileUtils {
             throw new RuntimeException(e);
         }
 
-        str.replace("\\", "/");
+        str = str.replace("\\", "/");
 
         return str;
     }

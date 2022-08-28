@@ -152,6 +152,7 @@ public class Installer {
                 long hash = crc32.getValue();
 
                 if (hash != fileMap.get(fileNeeded)) {
+					System.out.println("Hash comparision failed for " + fileNeeded);
                     throw new RuntimeException("Files are incorrect.");
                 }
             }
