@@ -7,9 +7,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -17,8 +15,12 @@ public class WebUtil {
 
     public static final int THREAD_AMOUNT = 8;
     public static String[] sources = new String[]{ // don't forget the final /
-            "http://raw.githubusercontent.com/nullTheCoder/VoWCompiled/master/"
+            "http://raw.githubusercontent.com/Team-VoW/updater-data/main/",
+            "http://voicesofwynn.com/files/updater-data/",
+            "http://raw.githubusercontent.com/Team-VoW/updater-data/main/",
+            "http://voicesofwynn.com/files/updater-data/"
     };
+
     private final ThreadPoolExecutor es;
 
     public WebUtil() {
@@ -26,7 +28,7 @@ public class WebUtil {
     }
 
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
-        Map<String, remoteJar> list = new HashMap<>();
+        Map<String, remoteJar> list = new LinkedHashMap<>();
 
         BufferedInputStream r = new BufferedInputStream(getHttpStream("files.csv"));
 
@@ -68,37 +70,41 @@ public class WebUtil {
     }
 
     public static InputStream getHttpStream(String address) throws IOException {
-
         InputStream stream = null;
-        int i = 0;
-        for (String source : sources) {
-            try {
-                URL url = new URL(source + address);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setConnectTimeout(2000);
-
-                String redirect = con.getHeaderField("Location");
-                if (redirect != null) {
-                    con = (HttpURLConnection) new URL(redirect).openConnection();
+        try {
+            int i = 0;
+            for (String source : sources) {
+                try {
+                    URL url = new URL(source + address);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setConnectTimeout(2000);
-                }
 
-                String re = con.getResponseMessage();
-                if (re.equals("OK")) {
-                    stream = con.getInputStream();
+                    String redirect = con.getHeaderField("Location");
+                    if (redirect != null) {
+                        con = (HttpURLConnection) new URL(redirect).openConnection();
+                        con.setConnectTimeout(2000);
+                    }
 
-                    // replace the element 0 with this one
-                    String zero = sources[0];
-                    sources[0] = sources[i];
-                    sources[i] = zero;
-                } else {
-                    throw new IOException();
+                    String re = con.getResponseMessage();
+                    if (re.equals("OK")) {
+                        stream = con.getInputStream();
+
+                        // replace the element 0 with this one
+                        String zero = sources[i];
+                        sources[i] = sources[0];
+                        sources[0] = zero;
+                    } else {
+                        throw new IOException();
+                    }
+                    break;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
+                i++;
             }
-            i++;
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
+            stream = getHttpStream(address);
         }
 
         return stream;

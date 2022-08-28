@@ -171,7 +171,7 @@ public class Main {
         String os = System.getProperty("os.name");
 
         if (os.toLowerCase().contains("windows") || os.toLowerCase().contains("linux")) {
-            Color bc = new Color(170, 170, 170);
+            Color bc = new Color(204, 208, 207);
 
             downloadChoose.setBackground(bc);
             install.setBackground(bc);
