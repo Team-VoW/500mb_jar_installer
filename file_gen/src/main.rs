@@ -45,5 +45,5 @@ fn main() {
             );
         }
     }
-    fs::write("./out/files.csv", files).unwrap();
+    fs::write("./out/versions.csv", files).unwrap();
 }
