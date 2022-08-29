@@ -6,7 +6,6 @@ import com.voicesofwynn.installer.utils.WebUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
@@ -147,7 +146,7 @@ public class Installer {
                 long hash = crc32.getValue();
 
                 if (hash != fileMap.get(fileNeeded)) {
-					System.out.println("Hash comparision failed for " + fileNeeded);
+                    System.out.println("Hash comparision failed for " + fileNeeded);
 
                     System.out.println(fileMap.get(fileNeeded));
 
