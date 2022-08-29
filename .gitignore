@@ -10,4 +10,6 @@
 /installer/test.jar
 /installer/.gradle
 
+/installer/build.bat
+
 */.DS_Store
