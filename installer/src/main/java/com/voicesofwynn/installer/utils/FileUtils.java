@@ -146,7 +146,7 @@ public class FileUtils {
             if (file.isFile()) {
                 String path = folderToZip.toURI().relativize(file.toURI()).getPath();
                 ZipEntry e = new ZipEntry(path);
-                System.out.println("packing " + path);
+                //System.out.println("packing " + path);
                 e.setTime(0);
                 out.putNextEntry(e);
 
@@ -168,7 +168,6 @@ public class FileUtils {
         // create output directory if it doesn't exist
         if (!dir.exists()) dir.mkdirs();
         FileInputStream fis;
-        System.out.println("test");
         try {
             fis = new FileInputStream(zipFilePath);
             ZipInputStream zis = new ZipInputStream(fis);
@@ -181,7 +180,7 @@ public class FileUtils {
                     continue;
                 }
 
-                System.out.println("Unzipping to " + newFile.getAbsolutePath());
+                //System.out.println("Unzipping to " + newFile.getAbsolutePath());
                 //create directories for sub directories in zip
                 newFile.getParentFile().mkdirs();
                 Files.copy(zis, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);

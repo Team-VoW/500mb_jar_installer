@@ -85,7 +85,7 @@ public class Installer {
             WebUtil webUtil = new WebUtil();
             for (String fileNeeded : toGet) {
                 out.outState("Getting ready to get " + fileNeeded + "!", count, toGet.size());
-                System.out.println("Asking for " + fileNeeded);
+                //System.out.println("Asking for " + fileNeeded);
 
                 File fileToCreate = new File(installCache.getPath() + "/" + fileNeeded);
                 fileToCreate.getParentFile().mkdirs();
@@ -111,7 +111,7 @@ public class Installer {
 
                 String msg = "Downloaded [" + i + "/" + toGet.size() + "]!";
 
-                System.out.println(msg);
+                //System.out.println(msg);
                 out.outState(msg, i, toGet.size());
                 Thread.sleep(50);
                 i = webUtil.finished();
@@ -149,10 +149,11 @@ public class Installer {
                 if (hash != fileMap.get(fileNeeded)) {
                     System.out.println("Hash comparision failed for " + fileNeeded);
 
-                    System.out.println(fileMap.get(fileNeeded));
-
                     throw new RuntimeException("Files are incorrect.");
                 }
+                /*else {
+                    System.out.println("Hash comparision successful for " + fileNeeded");
+                }*/
             }
 
         }

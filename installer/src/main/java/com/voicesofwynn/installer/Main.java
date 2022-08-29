@@ -21,11 +21,10 @@ public class Main {
         JFrame jFrame = new JFrame("Voices Of Wynn Installer");
 
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        System.out.println("The year is " + year);
         if (year > 2022) {
-            System.out.println("2022 has passed and this installer jar is not DEAD.");
+            System.out.println("2022 has passed and this installer jar is now dead.");
             JFrame f = new JFrame();
-            JOptionPane.showMessageDialog(f, "This installer jar does not work anymore.");
+            JOptionPane.showMessageDialog(f, "This installer jar does not work anymore. Please update.");
             return;
         }
 
