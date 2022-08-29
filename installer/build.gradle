@@ -12,7 +12,7 @@ repositories {
 }
 
 task generateSources(type: Copy) {
-    from 'src/replaceme/java'
+    from 'src/main/java'
     into "$buildDir/generated-src"
 }
 

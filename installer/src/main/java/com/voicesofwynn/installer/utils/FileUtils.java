@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -36,7 +39,7 @@ public class FileUtils {
 
             if (cache.exists()) {
                 try {
-                    String c = Files.readString(cache.toPath());
+                    String c = new String(Files.readAllBytes(cache.toPath()));
                     File f = new File(c);
                     if (f.getParentFile().exists() && !f.exists() || f.isDirectory()) {
                         if (f.isDirectory() || !f.exists()) {
@@ -63,7 +66,7 @@ public class FileUtils {
                         }
 
                         try {
-                            Files.writeString(cache.toPath(), c);
+                            Files.write(cache.toPath(), c.getBytes());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -122,7 +125,7 @@ public class FileUtils {
         }
 
         try {
-            Files.writeString(cache.toPath(), str);
+            Files.write(cache.toPath(), str.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -134,7 +137,7 @@ public class FileUtils {
 
     public static void zip(File folderToZip, File zipArchive) throws IOException {
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipArchive));
-        List<File> files = new ArrayList<>(List.of(folderToZip.listFiles()));
+        List<File> files = new LinkedList<>(Arrays.asList(folderToZip.listFiles()));
         out.setLevel(ZipOutputStream.STORED);
         out.setLevel(0);
         while (files.size() > 0) {
@@ -165,8 +168,7 @@ public class FileUtils {
         // create output directory if it doesn't exist
         if (!dir.exists()) dir.mkdirs();
         FileInputStream fis;
-        //buffer for read and write data to file
-        byte[] buffer = new byte[1024];
+        System.out.println("test");
         try {
             fis = new FileInputStream(zipFilePath);
             ZipInputStream zis = new ZipInputStream(fis);
@@ -182,11 +184,7 @@ public class FileUtils {
                 System.out.println("Unzipping to " + newFile.getAbsolutePath());
                 //create directories for sub directories in zip
                 newFile.getParentFile().mkdirs();
-                Files.write(newFile.toPath(), zis.readAllBytes());
-                if (Files.readAllBytes(newFile.toPath()).length == 0) {
-                    newFile.delete();
-                }
-                zis.closeEntry();
+                Files.copy(zis, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 ze = zis.getNextEntry();
             }
             //close last ZipEntry

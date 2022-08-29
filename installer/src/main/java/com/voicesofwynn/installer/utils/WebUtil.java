@@ -11,6 +11,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import static com.voicesofwynn.installer.utils.ByteUtils.readAllBytes;
+
 public class WebUtil {
 
     public static final int THREAD_AMOUNT = 8;
@@ -33,7 +35,7 @@ public class WebUtil {
 
         BufferedInputStream r = new BufferedInputStream(getHttpStream("files.csv"));
 
-        String str = new String(r.readAllBytes());
+        String str = new String(readAllBytes(r));
         String[] strs = str.split("\n");
 
         System.out.println(str);
@@ -54,7 +56,7 @@ public class WebUtil {
 
         BufferedInputStream r = new BufferedInputStream(getHttpStream(jar + "/files.csv"));
 
-        String str = new String(r.readAllBytes());
+        String str = new String(readAllBytes(r));
         String[] strs = str.split("\n");
 
 
@@ -135,7 +137,7 @@ public class WebUtil {
                     try {
                         InputStream s = getHttpStream(jar + "/" + path);
 
-                        rfg.run(s.readAllBytes());
+                        rfg.run(readAllBytes(s));
                     } catch (Exception e) {
                         rfg.run(null);
                     }
@@ -148,7 +150,20 @@ public class WebUtil {
         void run(byte[] contents);
     }
 
-    public record remoteJar(String recommendedFileName, String id) {
+    public static class remoteJar {
+        public String recommendedFileName_, id_;
+        public remoteJar(String recommendedFileName, String id) {
+            this.recommendedFileName_ = recommendedFileName;
+            this.id_ = id;
+        }
+
+        public String recommendedFileName() {
+            return recommendedFileName_;
+        }
+
+        public String id() {
+            return id_;
+        }
     }
 
 }

@@ -40,7 +40,7 @@ public class Installer {
 
             out.outState("Scanning files!", 1, 3);
 
-            List<File> files = new ArrayList<>(List.of(installCache.listFiles()));
+            List<File> files = new LinkedList<>(Arrays.asList(installCache.listFiles()));
 
             Map<Long, File> disk = new HashMap<>();
             while (files.size() > 0) {
@@ -117,7 +117,9 @@ public class Installer {
                 i = webUtil.finished();
             }
 
-            files = new ArrayList<>(List.of(installCache.listFiles()));
+            files = new ArrayList<>();
+            files.addAll(Arrays.asList(installCache.listFiles()));
+
             while (files.size() > 0) {
                 File file = files.get(0);
 

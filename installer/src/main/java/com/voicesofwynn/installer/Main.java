@@ -33,11 +33,6 @@ public class Main {
             Image img = ImageIO.read(Main.class.getResource("/wynnvplogo.png"));
             jFrame.setIconImage(img);
 
-            // mac stuff
-            final Taskbar taskbar = Taskbar.getTaskbar();
-            taskbar.setIconImage(img);
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Voices Of Wynn Installer");
         } catch (Exception e) {
             System.out.println("No taskbar?");
         }
