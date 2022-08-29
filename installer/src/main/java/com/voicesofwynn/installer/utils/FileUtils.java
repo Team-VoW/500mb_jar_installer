@@ -48,9 +48,10 @@ public class FileUtils {
                             c += "/";
                         }
 
+
                         for (File fl : f.listFiles()) {
                             String sub = fl.getName().toLowerCase().replace(" ", "").replace("_", "").replace("-", "");
-                            if (sub.contains("voicesofwynn") || sub.contains("voices") && sub.contains("wynn") || sub.contains("vynnvp")) {
+                            if (fl.isFile() && (sub.contains("voicesofwynn") || sub.contains("voices") && sub.contains("wynn") || sub.contains("vynnvp")) && sub.endsWith("jar")) {
                                 c += fl.getName();
                                 break;
                             }
@@ -108,7 +109,7 @@ public class FileUtils {
 
             for (File fl : f.listFiles()) {
                 String sub = fl.getName().toLowerCase().replace(" ", "").replace("_", "").replace("-", "");
-                if (sub.contains("voicesofwynn") || sub.contains("voices") && sub.contains("wynn") || sub.contains("vynnvp")) {
+                if (fl.isFile() && (sub.contains("voicesofwynn") || sub.contains("voices") && sub.contains("wynn") || sub.contains("vynnvp")) && sub.endsWith("jar")) {
                     str += fl.getName();
                     break;
                 }

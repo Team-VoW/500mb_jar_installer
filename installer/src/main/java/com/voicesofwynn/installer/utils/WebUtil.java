@@ -15,6 +15,7 @@ public class WebUtil {
 
     public static final int THREAD_AMOUNT = 8;
     public static String[] sources = new String[]{ // don't forget the final /
+            "https://raw.githubusercontent.com/nullTheCoder/VoWCompiled/master/",
             "http://raw.githubusercontent.com/Team-VoW/updater-data/",
             "http://voicesofwynn.com/files/updater-data/",
             "http://raw.githubusercontent.com/Team-VoW/updater-data/",
@@ -30,7 +31,7 @@ public class WebUtil {
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
         Map<String, remoteJar> list = new LinkedHashMap<>();
 
-        BufferedInputStream r = new BufferedInputStream(getHttpStream("main/versions.csv"));
+        BufferedInputStream r = new BufferedInputStream(getHttpStream("files.csv"));
 
         String str = new String(r.readAllBytes());
         String[] strs = str.split("\n");

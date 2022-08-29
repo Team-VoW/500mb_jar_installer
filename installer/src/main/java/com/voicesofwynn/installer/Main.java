@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.Map;
 
 public class Main {
@@ -18,6 +19,15 @@ public class Main {
     public static void main(String[] args) {
 
         JFrame jFrame = new JFrame("Voices Of Wynn Installer");
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        System.out.println("The year is " + year);
+        if (year > 2022) {
+            System.out.println("2022 has passed and this installer jar is not DEAD.");
+            JFrame f = new JFrame();
+            JOptionPane.showMessageDialog(f, "This installer jar does not work anymore.");
+            return;
+        }
 
         try {
             Image img = ImageIO.read(Main.class.getResource("/wynnvplogo.png"));
@@ -43,7 +53,6 @@ public class Main {
             System.exit(0);
         }
         options = options1;
-
 
         // logo
         JButton logo = new JButton();
@@ -75,7 +84,6 @@ public class Main {
             downloadChoose.addItem(jar.getKey());
         }
 
-
         // file chooser
         JTextField path = new JTextField(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
         JButton chooserOpener = new JButton();
@@ -106,8 +114,7 @@ public class Main {
             File loc = new File(path.getText());
             loc = loc.isFile() ? loc.getParentFile() : loc;
 
-            if (loc.isFile()) loc = loc.getParentFile();
-            chooser.setCurrentDirectory(loc);
+            chooser.setCurrentDirectory(loc.isDirectory() ? loc : loc.getParentFile());
 
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
