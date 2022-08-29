@@ -16,24 +16,23 @@ public class Installer {
     public static void install(File jarFile, InstallerOut out, String request) throws Exception {
         // create a cache dir
         out.outState("Unpacking the current jar!", 0, 1);
-        File installCache = new File(jarFile.getParent() + "/installer_cache");
+        File installCache = new File(jarFile.getParent() + "/vow_installer_cache");
         if (!installCache.exists()) {
             installCache.mkdirs();
-
-            // check if jar exists
-            if (jarFile.exists()) {
-                // unzip it
-                try {
-                    FileUtils.unzip(jarFile.getPath(), installCache.getPath());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Jar provided is corrupt");
-                    out.corruptJar();
-                }
-            }
-        } else {
-            System.out.println("Cache dir exists which is not supposed to happen");
         }
+
+        // check if jar exists
+        if (jarFile.exists()) {
+            // unzip it
+            try {
+                FileUtils.unzip(jarFile.getPath(), installCache.getPath());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Jar provided is corrupt");
+                out.corruptJar();
+            }
+        }
+
         out.outState("Connecting to server to see what changed in " + request + "!", 1, 3);
         // connect to server and get the changes
         {

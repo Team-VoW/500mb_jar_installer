@@ -174,6 +174,11 @@ public class FileUtils {
             while (ze != null) {
                 String fileName = ze.getName();
                 File newFile = new File(destDir + File.separator + fileName);
+                if (newFile.exists()) {
+                    ze = zis.getNextEntry();
+                    continue;
+                }
+
                 System.out.println("Unzipping to " + newFile.getAbsolutePath());
                 //create directories for sub directories in zip
                 newFile.getParentFile().mkdirs();
