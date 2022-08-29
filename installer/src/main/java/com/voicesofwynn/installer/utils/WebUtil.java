@@ -17,7 +17,6 @@ public class WebUtil {
 
     public static final int THREAD_AMOUNT = 8;
     public static String[] sources = new String[]{ // don't forget the final /
-            "https://raw.githubusercontent.com/nullTheCoder/VoWCompiled/master/",
             "http://raw.githubusercontent.com/Team-VoW/updater-data/",
             "http://voicesofwynn.com/files/updater-data/",
             "http://raw.githubusercontent.com/Team-VoW/updater-data/",
@@ -33,12 +32,12 @@ public class WebUtil {
     public static Map<String, remoteJar> getRemoteJarsFromCSV() throws Exception {
         Map<String, remoteJar> list = new LinkedHashMap<>();
 
-        BufferedInputStream r = new BufferedInputStream(getHttpStream("files.csv"));
+        BufferedInputStream r = new BufferedInputStream(getHttpStream("main/versions.csv"));
 
         String str = new String(readAllBytes(r));
         String[] strs = str.split("\n");
 
-        System.out.println(str);
+        //System.out.println(str);
 
         for (int i = 1; i < strs.length; i++) {
             String s = strs[i];
@@ -54,6 +53,7 @@ public class WebUtil {
     public static Map<String, Long> getRemoteFilesFromCSV(String jar) throws Exception {
         Map<String, Long> list = new HashMap<>();
 
+        System.out.println("Trying to get " + jar + "/files.csv");
         BufferedInputStream r = new BufferedInputStream(getHttpStream(jar + "/files.csv"));
 
         String str = new String(readAllBytes(r));
@@ -65,7 +65,7 @@ public class WebUtil {
             if (s.length() < 1) continue;
 
             String[] options = s.split(",");
-            System.out.println(Arrays.toString(options));
+            //System.out.println(Arrays.toString(options));
             list.put(options[0], Long.parseLong(options[1])); // 0: path | 1: hash
         }
 
@@ -73,6 +73,7 @@ public class WebUtil {
     }
 
     public static InputStream getHttpStream(String address) throws IOException {
+        address = address.replace(" ", "%20"); //Replace spaces in the filename
         InputStream stream = null;
         try {
             int i = 0;
