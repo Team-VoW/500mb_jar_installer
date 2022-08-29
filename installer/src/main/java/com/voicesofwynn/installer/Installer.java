@@ -6,7 +6,9 @@ import com.voicesofwynn.installer.utils.WebUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
@@ -41,33 +43,18 @@ public class Installer {
             out.outState("Scanning files!", 1, 3);
 
             List<File> files = new ArrayList<>(List.of(installCache.listFiles()));
-            List<File> delete = new ArrayList<>();
-            Map<File, File> move = new HashMap<>();
+
+            Map<Long, File> disk = new HashMap<>();
             while (files.size() > 0) {
                 File file = files.get(0);
 
                 if (file.isFile()) {
 
-                    String path = installCache.toURI().relativize(file.toURI()).getPath();
-
                     Checksum crc32 = new CRC32();
                     crc32.update(Files.readAllBytes(file.toPath()), 0, (int) Files.size(file.toPath()));
                     long hash = crc32.getValue();
 
-                    if (!fileMap.containsKey(path)) {
-                        if (fileMap.containsValue(hash)) {
-                            for (Map.Entry<String, Long> entry : fileMap.entrySet()) {
-                                if (entry.getValue() == hash) {
-                                    File fl = new File(installCache.getPath() + "/" + entry.getKey());
-                                    move.put(file, fl);
-                                }
-                            }
-                        } else {
-                            delete.add(file);
-                        }
-                    } else if (hash != fileMap.get(path)) {
-                        delete.add(file);
-                    }
+                    disk.put(hash, file);
                 } else {
                     files.addAll(Arrays.asList(file.listFiles()));
                 }
@@ -75,36 +62,29 @@ public class Installer {
             }
 
             int count = 0;
-            for (Map.Entry<File, File> entry : move.entrySet()) {
-                out.outState("Moving " + entry.getKey().getPath() + " to " + entry.getValue().getPath() + "!", count, move.size());
-                System.out.println("Moving " + entry.getKey().getPath() + " to " + entry.getValue().getPath());
-                entry.getValue().getParentFile().mkdirs();
-                entry.getKey().renameTo(entry.getValue());
-                count++;
-            }
 
             List<String> toGet = new ArrayList<>();
             for (Map.Entry<String, Long> entry : fileMap.entrySet()) {
                 File fl = new File(installCache.getPath() + "/" + entry.getKey());
-                if (fl.isDirectory() || !fl.exists()) {
-                    if (fl.isDirectory()) {
-                        delete.add(fl);
-                    }
 
-                    toGet.add(entry.getKey());
+                if (fl.isDirectory() || !fl.exists()) {
+                    File f = disk.get(entry.getValue());
+                    if (f != null) {
+                        Files.copy(f.toPath(), fl.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } else {
+                        toGet.add(entry.getKey());
+                    }
+                } else {
+                    Checksum crc32 = new CRC32();
+                    crc32.update(Files.readAllBytes(fl.toPath()), 0, (int) Files.size(fl.toPath()));
+                    long hash = crc32.getValue();
+                    if (hash != entry.getValue()) {
+                        toGet.add(entry.getKey());
+                    }
                 }
             }
 
-            count = 0;
-            for (File file : delete) {
-                out.outState("Deleting " + file.getPath() + "!", count, delete.size());
-                System.out.println("Deleting " + file.getPath());
-                file.delete();
-                count += 1;
-            }
-
             WebUtil webUtil = new WebUtil();
-            count = 0;
             for (String fileNeeded : toGet) {
                 out.outState("Getting ready to get " + fileNeeded + "!", count, toGet.size());
                 System.out.println("Asking for " + fileNeeded);
@@ -139,7 +119,22 @@ public class Installer {
                 i = webUtil.finished();
             }
 
-            fileMap = WebUtil.getRemoteFilesFromCSV(request);
+            files = new ArrayList<>(List.of(installCache.listFiles()));
+            while (files.size() > 0) {
+                File file = files.get(0);
+
+                if (file.isFile()) {
+                    String relative = installCache.toURI().relativize(file.toURI()).getPath();
+
+                    if (!fileMap.containsKey(relative)) {
+                        System.out.println("Deleting " + relative);
+                        Files.delete(file.toPath());
+                    }
+                } else {
+                    files.addAll(Arrays.asList(file.listFiles()));
+                }
+                files.remove(file);
+            }
 
             for (String fileNeeded : toGet) {
                 out.outState("Checking integrity of " + fileNeeded + "!", count, toGet.size());
@@ -153,6 +148,9 @@ public class Installer {
 
                 if (hash != fileMap.get(fileNeeded)) {
 					System.out.println("Hash comparision failed for " + fileNeeded);
+
+                    System.out.println(fileMap.get(fileNeeded));
+
                     throw new RuntimeException("Files are incorrect.");
                 }
             }

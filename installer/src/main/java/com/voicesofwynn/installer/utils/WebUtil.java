@@ -94,6 +94,7 @@ public class WebUtil {
                         sources[i] = sources[0];
                         sources[0] = zero;
                     } else {
+                        System.out.println(re + " | " + url);
                         throw new IOException();
                     }
                     break;
