@@ -44,6 +44,7 @@ public class WebUtil {
             if (s.length() < 1) continue;
 
             String[] options = s.split(",");
+            options[2] = options[2].replaceAll("[^a-zA-Z\\d._$%@#~()*&^!?§]", "");
             list.put(options[1], new remoteJar(options[2], options[0])); // 0: id | 1: name | 2: rname
         }
 

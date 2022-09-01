@@ -91,7 +91,7 @@ public class FileUtils {
                         if (instances.exists() && instances.isDirectory()) {
                             for (File f : instances.listFiles()) {
                                 if (f.getName().toLowerCase().contains("wynn")) {
-                                    return f.getPath() + "/mods/" + preferredName;
+                                    return f.getPath() + "/.minecraft/mods/" + preferredName;
                                 }
                             }
                         }
@@ -184,6 +184,9 @@ public class FileUtils {
                 //create directories for sub directories in zip
                 newFile.getParentFile().mkdirs();
                 Files.copy(zis, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (Files.size(newFile.toPath()) <= 0) {
+                    newFile.delete();
+                }
                 ze = zis.getNextEntry();
             }
             //close last ZipEntry
