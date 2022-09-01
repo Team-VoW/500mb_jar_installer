@@ -25,7 +25,7 @@ latest updated mod file. If you wish so, you can delete it after closing the app
 
 Java 8 needs to be installed on your device to run the application.
 
-If the application doesn't work for you and you can't update your Java,  
+If the application doesn't work for you and you can't update your Java,
 you can get Voices of Wynn by downloading the mod file directly from [our website](https://voicesofwynn.com).
 
 ## Contact
