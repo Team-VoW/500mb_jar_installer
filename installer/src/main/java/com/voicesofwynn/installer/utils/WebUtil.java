@@ -84,6 +84,7 @@ public class WebUtil {
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setConnectTimeout(2000);
 
+                    // sort out redirection response, send a second request to the new location
                     String redirect = con.getHeaderField("Location");
                     if (redirect != null) {
                         con = (HttpURLConnection) new URL(redirect).openConnection();
@@ -94,7 +95,7 @@ public class WebUtil {
                     if (re.equals("OK")) {
                         stream = con.getInputStream();
 
-                        // replace the element 0 with this one
+                        // replace primary source with this one, because it works the best for now
                         String zero = sources[i];
                         sources[i] = sources[0];
                         sources[0] = zero;
@@ -102,7 +103,7 @@ public class WebUtil {
                         System.out.println(re + " | " + url);
                         throw new IOException();
                     }
-                    break;
+                    break; // no need to try other sources
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
