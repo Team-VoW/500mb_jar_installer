@@ -20,6 +20,7 @@ public class Main {
 
         JFrame jFrame = new JFrame("Voices Of Wynn Installer");
 
+        // killswitch of the Alpha version
         int year = Calendar.getInstance().get(Calendar.YEAR);
         if (year > 2022) {
             System.out.println("2022 has passed and this installer jar is now dead.");
@@ -36,6 +37,7 @@ public class Main {
             System.out.println("No taskbar?");
         }
 
+        // load the list of available versions
         final Map<String, WebUtil.remoteJar> options;
         Map<String, WebUtil.remoteJar> options1;
         try {
@@ -68,7 +70,7 @@ public class Main {
         logo.setContentAreaFilled(false);
         logo.setBorderPainted(false);
 
-        // download chooser
+        // download chooser select box
         JComboBox<String> downloadChoose = new JComboBox<>();
         JLabel downloadLabel = new JLabel("<html><strong>Version To Download</strong></html>");
         downloadChoose.setMaximumSize(new Dimension(430, 30));
@@ -78,14 +80,14 @@ public class Main {
             downloadChoose.addItem(jar.getKey());
         }
 
-        // file chooser
+        // file chooser text box
         JTextField path = new JTextField(FileUtils.getPreferredFileLocation(null, options.get((String) downloadChoose.getSelectedItem()).recommendedFileName()));
         JButton chooserOpener = new JButton();
         chooserOpener.setText("Open");
 
         JLabel downloadToLabel = new JLabel("<html><strong>Download To</strong></html>");
 
-
+        // note label
         JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of Wynn jar downloaded, please choose it, because it will profusely speed up your download!</html>");
         downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
         downloadToRecommendationLabel.setMaximumSize(new Dimension(430, 50));
@@ -101,6 +103,7 @@ public class Main {
             }
         });
 
+        // file select dialogue
         chooserOpener.addActionListener(e -> {
             JFrame open = new JFrame("Browse");
 
@@ -133,6 +136,7 @@ public class Main {
 
         });
 
+        // path text box settings
         JPanel pathPanel = new JPanel();
         pathPanel.setLayout(new BoxLayout(pathPanel, BoxLayout.X_AXIS));
         pathPanel.setMaximumSize(new Dimension(430, 30));
@@ -153,11 +157,11 @@ public class Main {
 
         downloadToLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        //footing
+        // footing
         JPanel footing = new JPanel();
         footing.setMaximumSize(new Dimension(15, 10));
 
-
+        // align everything to center
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
         downloadChoose.setAlignmentX(Component.CENTER_ALIGNMENT);
         path.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -182,6 +186,7 @@ public class Main {
         }
 
 
+        // put everything together
         Container contentPane = jFrame.getContentPane();
         BoxLayout l = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
 
@@ -207,9 +212,11 @@ public class Main {
 
         jFrame.setVisible(true);
 
+        // install button action
         final Thread[] t = new Thread[1];
         install.addActionListener(ev -> {
             if (t[0] != null && t[0].isAlive()) {
+                // cancel current operation and reenable controls
                 t[0].stop();
                 path.setEnabled(true);
                 chooserOpener.setEnabled(true);
@@ -219,11 +226,13 @@ public class Main {
                 return;
             }
 
+            // disable controls
             path.setEnabled(false);
             chooserOpener.setEnabled(false);
             downloadChoose.setEnabled(false);
             install.setText("Cancel");
 
+            // progress reporting
             InstallerOut out = new InstallerOut() {
                 @Override
                 public void outState(String str, int done, int needed) {
@@ -243,6 +252,7 @@ public class Main {
                 int o = JOptionPane.showConfirmDialog(jFrame, "By proceeding, the file [" + f.getPath() + "] will be overwritten by the update.", "Confirm Update", JOptionPane.YES_NO_OPTION);
 
                 if (o != JOptionPane.OK_OPTION) {
+                    // overwrite denied – reenable controls and don't start the installation
                     path.setEnabled(true);
                     chooserOpener.setEnabled(true);
                     downloadChoose.setEnabled(true);
@@ -250,19 +260,21 @@ public class Main {
                     return;
                 }
             }
-            WebUtil.remoteJar jar = options.get((String) downloadChoose.getSelectedItem());
+            WebUtil.remoteJar jar = options.get((String) downloadChoose.getSelectedItem()); // selected version to install
 
-            t[0] = new Thread(() -> {
+            t[0] = new Thread(() -> { //proceed on a separate thread
                 try {
-                    Installer.install(f, out, jar.id());
-                    feedback.setText("");
+                    Installer.install(f, out, jar.id()); // start the installation
+                    feedback.setText(""); // instalation complete – clear the output and set the progress bar to 100 %
                     progress.setValue(100);
                     progress.setMaximum(100);
                     String rec = jar.recommendedFileName();
                     if (!f.getName().equals(rec)) {
+                        // update rather than a clean installation, file should be renamed
                         int o = JOptionPane.showConfirmDialog(jFrame, "Update successful.\nShould " + f.getName() + " be renamed to " + rec + "?", "Rename Updated File?", JOptionPane.YES_NO_OPTION);
 
                         if (o == JOptionPane.OK_OPTION) {
+                            // renaming approved
                             f.renameTo(new File(f.getParent() + "/" + rec));
                             path.setText(FileUtils.getPreferredFileLocation(null, jar.recommendedFileName()));
                         }
@@ -276,6 +288,8 @@ public class Main {
                     feedback.setText("Failed");
                     JOptionPane.showMessageDialog(jFrame, "Failed to download the file :( \nPlease retry in a bit.");
                 }
+
+                // operation finished, reenable controls
                 path.setEnabled(true);
                 chooserOpener.setEnabled(true);
                 downloadChoose.setEnabled(true);
