@@ -1,11 +1,12 @@
-/server/target
-/server/jars
-/server/.idea
+# good enough
 
-/installer/out
-/installer/build
-/installer/.idea
-/installer/test.jar
-/installer/.gradle
+/out
+/build
+/installer
+/.idea
+/test.jar
+/.gradle
+
+/build.bat
 
 */.DS_Store

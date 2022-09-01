@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.voiceofwynn'
+version '1.0-SNAPSHOT'
+mainClassName = "com.voicesofwynn.installer.Main"
+
+repositories {
+    mavenCentral()
+}
+
+task generateSources(type: Copy) {
+    from 'src/main/java'
+    into "$buildDir/generated-src"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Manifest-Version": project.version,
+                "Main-Class": mainClassName
+        )
+    }
+}
