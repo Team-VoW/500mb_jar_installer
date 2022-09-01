@@ -2,6 +2,7 @@
 
 /out
 /build
+/installer
 /.idea
 /test.jar
 /.gradle
