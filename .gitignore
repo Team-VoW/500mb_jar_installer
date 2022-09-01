@@ -1,15 +1,11 @@
-# Someone please clean this up later
-/file_gen/jars
-/file_gen/target
-/file_gen/out
-/file_gen/.idea
+# good enough
 
-/installer/out
-/installer/build
-/installer/.idea
-/installer/test.jar
-/installer/.gradle
+/out
+/build
+/.idea
+/test.jar
+/.gradle
 
-/installer/build.bat
+/build.bat
 
 */.DS_Store
