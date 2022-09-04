@@ -20,14 +20,6 @@ public class Main {
 
         JFrame jFrame = new JFrame("Voices Of Wynn Installer");
 
-        // killswitch of the Alpha version
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        if (year > 2022) {
-            System.out.println("2022 has passed and this installer jar is now dead.");
-            JFrame f = new JFrame();
-            JOptionPane.showMessageDialog(f, "This installer jar does not work anymore. Please update.");
-            return;
-        }
 
         try {
             Image img = ImageIO.read(Main.class.getResource("/wynnvplogo.png"));
@@ -89,7 +81,7 @@ public class Main {
 
         // note label
         JLabel downloadToRecommendationLabel = new JLabel("<html>If you already have a Voices of Wynn jar downloaded, please choose it, because it will profusely speed up your download!</html>");
-        downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.HORIZONTAL);
+        downloadToRecommendationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         downloadToRecommendationLabel.setMaximumSize(new Dimension(430, 50));
 
         path.addActionListener(e -> {
