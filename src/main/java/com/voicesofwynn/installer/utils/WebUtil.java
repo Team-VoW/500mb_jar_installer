@@ -54,7 +54,7 @@ public class WebUtil {
     public static Map<String, Long> getRemoteFilesFromCSV(String jar) throws Exception {
         Map<String, Long> list = new HashMap<>();
 
-        System.out.println("Trying to get " + jar + "/files.csv");
+        System.out.println("Trying to get " + jar + "/files.csv.");
         BufferedInputStream r = new BufferedInputStream(getHttpStream(jar + "/files.csv"));
 
         String str = new String(readAllBytes(r));
@@ -81,12 +81,15 @@ public class WebUtil {
             for (String source : sources) {
                 try {
                     URL url = new URL(source + address);
+                    System.out.println("\t\tConnecting to " + source + address + ".");
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setConnectTimeout(2000);
 
                     // sort out redirection response, send a second request to the new location
                     String redirect = con.getHeaderField("Location");
                     if (redirect != null) {
+                        System.out.println("Redirection!");
+                        System.out.println("\t\tConnecting to " + redirect + "... ");
                         con = (HttpURLConnection) new URL(redirect).openConnection();
                         con.setConnectTimeout(2000);
                     }
@@ -94,8 +97,8 @@ public class WebUtil {
                     String re = con.getResponseMessage();
                     if (re.equals("OK")) {
                         stream = con.getInputStream();
-
-                        // replace primary source with this one, because it works the best for now
+                        
+						// replace primary source with this one, because it works the best for now
                         String zero = sources[i];
                         sources[i] = sources[0];
                         sources[0] = zero;
@@ -105,15 +108,16 @@ public class WebUtil {
                     }
                     break; // no need to try other sources
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 i++;
             }
         } catch (ConcurrentModificationException e) {
-            e.printStackTrace();
+			System.out.println("\t\tFailed.");
+            //e.printStackTrace();
             stream = getHttpStream(address);
         }
-
+        
         return stream;
     }
 
