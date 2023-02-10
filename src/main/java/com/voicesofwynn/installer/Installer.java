@@ -162,8 +162,9 @@ public class Installer {
 
                 if (hash != fileMap.get(fileNeeded)) {
                     System.out.println("Hash comparision failed for " + fileNeeded);
-
-                    throw new RuntimeException("Files are incorrect.");
+                    System.out.println("File downloaded from the server has a hash of " + hash);
+                    System.out.println("According to files.csv, the file should have a hash of " + fileMap.get(fileNeeded));
+                    throw new RuntimeException("File " + fileNeeded + " failed the integrity check.");
                 }
                 /*else {
                     System.out.println("Hash comparision successful for " + fileNeeded");
