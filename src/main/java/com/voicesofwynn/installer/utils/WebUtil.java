@@ -17,9 +17,9 @@ public class WebUtil {
 
     public static final int THREAD_AMOUNT = 8;
     public static String[] sources = new String[]{ // don't forget the final /
-            "http://raw.githubusercontent.com/Team-VoW/updater-data/",
+            "https://raw.githubusercontent.com/Team-VoW/updater-data/",
             "http://voicesofwynn.com/files/updater-data/",
-            "http://raw.githubusercontent.com/Team-VoW/updater-data/",
+            "https://raw.githubusercontent.com/Team-VoW/updater-data/",
             "http://voicesofwynn.com/files/updater-data/"
     };
 
