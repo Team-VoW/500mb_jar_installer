@@ -263,13 +263,8 @@ public class Main {
                     String rec = jar.recommendedFileName();
                     if (!f.getName().equals(rec)) {
                         // update rather than a clean installation, file should be renamed
-                        int o = JOptionPane.showConfirmDialog(jFrame, "Update successful.\nShould " + f.getName() + " be renamed to " + rec + "?", "Rename Updated File?", JOptionPane.YES_NO_OPTION);
-
-                        if (o == JOptionPane.OK_OPTION) {
-                            // renaming approved
-                            f.renameTo(new File(f.getParent() + "/" + rec));
-                            path.setText(FileUtils.getPreferredFileLocation(null, jar.recommendedFileName()));
-                        }
+                        f.renameTo(new File(f.getParent() + "/" + rec));
+                        path.setText(FileUtils.getPreferredFileLocation(null, jar.recommendedFileName()));
                     }
 
                     JOptionPane.showMessageDialog(jFrame, "Done!");
