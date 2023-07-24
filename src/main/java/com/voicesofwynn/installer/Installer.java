@@ -174,11 +174,20 @@ public class Installer {
                 long hash = crc32.getValue();
 
                 if (hash != fileMap.get(fileNeeded)) {
-                    System.out.println("FAILED!");
-                    System.out.println("Hash comparision failed for " + fileNeeded);
-                    System.out.println("File downloaded from the server has a hash of " + hash);
-                    System.out.println("According to files.csv, the file should have a hash of " + fileMap.get(fileNeeded));
-                    //throw new RuntimeException("File " + fileNeeded + " failed the integrity check.");
+                    if (fileNeeded.endsWith(".class")) {
+                        System.out.println("ERROR!");
+                        System.out.println("Hash comparision failed for " + fileNeeded);
+                        System.out.println("File downloaded from the server has a hash of " + hash);
+                        System.out.println("According to files.csv, the file should have a hash of " + fileMap.get(fileNeeded));
+                        System.out.println("Since this is a critical source file, the instaleller will now terminate");
+                        throw new RuntimeException("File " + fileNeeded + " failed the integrity check.");
+                    } else {
+                        System.out.println("WARNING!");
+                        System.out.println("Hash comparision failed for " + fileNeeded);
+                        System.out.println("File downloaded from the server has a hash of " + hash);
+                        System.out.println("According to files.csv, the file should have a hash of " + fileMap.get(fileNeeded));
+                        System.out.println("Since this is NOT a source file, the installer will be allowed to continue, but the resulting download will be incomplete");
+                    }
                 }
                 else {
                     System.out.println("Success!");
@@ -196,7 +205,7 @@ public class Installer {
         
         // delete the cache directory
         out.outState("Removing temporary files!", 99, 100);
-		System.out.println("Deleting the cache directory");
+        System.out.println("Deleting the cache directory");
         FileUtils.deleteDir(installCache);
         System.out.println("Cache directory deleted.");
     }

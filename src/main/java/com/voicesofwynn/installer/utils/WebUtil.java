@@ -37,10 +37,11 @@ public class WebUtil {
         String str = new String(readAllBytes(r));
         String[] strs = str.split("\n");
 
-        //System.out.println(str);
+        System.out.println(str);
 
         for (int i = 1; i < strs.length; i++) {
             String s = strs[i];
+            System.out.println("Processing: " + s);
             if (s.length() < 1) continue;
 
             String[] options = s.split(",");
@@ -98,7 +99,7 @@ public class WebUtil {
                     if (re.equals("OK")) {
                         stream = con.getInputStream();
                         
-						// replace primary source with this one, because it works the best for now
+                        // replace primary source with this one, because it works the best for now
                         String zero = sources[i];
                         sources[i] = sources[0];
                         sources[0] = zero;
@@ -113,7 +114,7 @@ public class WebUtil {
                 i++;
             }
         } catch (ConcurrentModificationException e) {
-			System.out.println("\t\tFailed.");
+            System.out.println("\t\tFailed.");
             //e.printStackTrace();
             stream = getHttpStream(address);
         }
