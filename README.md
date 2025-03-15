@@ -1,5 +1,11 @@
 # Voices of Wynn installer
 
+----------------------------------------------------------------------
+
+THIS REPOSITORY HAS BEEN ARCHIVED AS THE INSTALLER WAS MADE OBSOLETE BY THE 1.10.2 UPDATE OF THE MOD.
+
+----------------------------------------------------------------------
+
 This is the official repository for developing the installer for the Minecraft mod **Voices of Wynn**.
 
 Check out the [main repository](https://github.com/Team-VoW/WynncraftVoiceProject) for more information about the mod.
